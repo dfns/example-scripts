@@ -15,14 +15,12 @@ class Login:
         self.privateKeyPem = ''
         self.challengeIdentifier = ''
         self.challenge = ''
-        self.challengeB64 = ''
         self.authToken = ''
         self.credential = None
         self.firstFactor = {}
         
     def _setChallenge(self, challenge):
         self.challenge = challenge
-        self.challengeB64 = base64.urlsafe_b64encode(challenge.encode('utf-8')).decode('utf-8').rstrip('=')
 
     def _setChallengeIdentifier(self, authToken):
         self.challengeIdentifier = authToken
@@ -54,7 +52,7 @@ class Login:
         """
         self.publicKeyPem = publicKeyPem
         self.privateKeyPem = privateKeyPem
-        self.credential = KeyCredential(self.publicKeyPem, self.privateKeyPem, self.origin, False, self.challengeB64, credId=self.credId, create=False)
+        self.credential = KeyCredential(self.publicKeyPem, self.privateKeyPem, self.origin, False, self.challenge, credId=self.credId, create=False)
         self._setFirstFactor("Key")
         completeApi = DfnsAPI(self.host, "/auth/login", self.appId)
         data = {"challengeIdentifier": self.challengeIdentifier, "firstFactor": self.firstFactor}

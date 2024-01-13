@@ -15,14 +15,11 @@ class Registration:
         self.privateKeyPem = ''
         self.tempAuthToken = ''
         self.challenge = ''
-        self.challengeB64 = ''
         self.credential = None
         self.firstFactorCredential = {}
         
     def _setChallenge(self, challenge):
         self.challenge = challenge
-        # rstrip is needed so that challenge is matched by the backend
-        self.challengeB64 = base64.urlsafe_b64encode(challenge.encode('utf-8')).decode('utf-8').rstrip('=')
 
     def _setTempAuthToken(self, authToken):
         self.tempAuthToken = authToken
@@ -54,7 +51,7 @@ class Registration:
         """
         self.publicKeyPem = publicKeyPem
         self.privateKeyPem = privateKeyPem
-        self.credential = KeyCredential(self.publicKeyPem, self.privateKeyPem, self.origin, False, self.challengeB64)
+        self.credential = KeyCredential(self.publicKeyPem, self.privateKeyPem, self.origin, False, self.challenge)
         self._setFirstFactorCredential("Key")
         completeApi = DfnsAPI(self.host, "/auth/registration", self.appId, authToken=self.tempAuthToken)
         data = {"firstFactorCredential": self.firstFactorCredential}
