@@ -1,0 +1,64 @@
+WebAuthn Signature Verifier
+This is a Python 3 command-line tool to verify a WebAuthn/FIDO2 credential assertion signature. It takes the signature, public key, client data, and authenticator data as inputs and outputs whether the signature is valid.
+
+Setup
+It is recommended to use a Python virtual environment to manage dependencies and avoid conflicts with system-wide packages.
+
+This script requires two external libraries: cryptography and cbor2.
+
+1. Create a virtual environment:
+
+Navigate to your project directory and run the following command to create a virtual environment named venv:
+
+python3 -m venv venv
+
+2. Activate the virtual environment:
+
+On macOS and Linux:
+
+source venv/bin/activate
+
+On Windows:
+
+.\venv\Scripts\activate
+
+Your terminal prompt should now be prefixed with (venv), indicating that the virtual environment is active.
+
+3. Install the required libraries:
+
+With the virtual environment active, you can install the dependencies using pip:
+
+pip install cryptography cbor2
+
+Now you are ready to run the script. When you are finished, you can deactivate the virtual environment by simply typing deactivate in your terminal.
+
+Usage
+You can run the script from your terminal, providing the required data as command-line arguments.
+
+Example
+python3 verify_signature.py \
+--signature "MEUCIA..." \
+--publicKey "pAEDA..." \
+--clientData "eyJ0eX..." \
+--authenticatorData "SZYN5..."
+
+Interactive Mode
+If you run the script without providing all the arguments, it will prompt you to enter the missing values interactively.
+
+python3 dfns_webauthn_verify_signature.py
+
+The script will then ask for each piece of data:
+
+Enter signature: <paste_signature_here>
+Enter publicKey: <paste_public_key_here>
+Enter clientData: <paste_client_data_here>
+Enter authenticatorData: <paste_authenticator_data_here>
+
+Output
+The script will print one of two possible results to the console:
+
+Signature is valid
+
+Signature is NOT valid
+
+If an error occurs during processing (e.g., the public key is malformed), an error message will be printed before the final result.
