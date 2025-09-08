@@ -1,64 +1,96 @@
-WebAuthn Signature Verifier
-This is a Python 3 command-line tool to verify a WebAuthn/FIDO2 credential assertion signature. It takes the signature, public key, client data, and authenticator data as inputs and outputs whether the signature is valid.
+# WebAuthn Signature Verifier
 
-Setup
-It is recommended to use a Python virtual environment to manage dependencies and avoid conflicts with system-wide packages.
+This is a Python 3 command-line tool to verify a WebAuthn/FIDO2 credential assertion signature. It takes the signature, public key, client data, and authenticator data as inputs and outputs whether the signature is valid. 🔐
 
-This script requires two external libraries: cryptography and cbor2.
+---
 
-1. Create a virtual environment:
+## Setup
 
-Navigate to your project directory and run the following command to create a virtual environment named venv:
+It's recommended to use a Python virtual environment to manage dependencies and avoid conflicts with system-wide packages.
 
-python3 -m venv venv
+This script requires the `cryptography` library.
 
-2. Activate the virtual environment:
+1.  **Create a virtual environment**:
+    Navigate to your project directory and run the following command to create a virtual environment named `venv`:
+    ```bash
+    python3 -m venv venv
+    ```
 
-On macOS and Linux:
+2.  **Activate the virtual environment**:
+    * On macOS and Linux:
+        ```bash
+        source venv/bin/activate
+        ```
+    * On Windows:
+        ```powershell
+        .\venv\Scripts\activate
+        ```
+    Your terminal prompt should now be prefixed with `(venv)`, indicating that the virtual environment is active.
 
-source venv/bin/activate
+3.  **Install the required library**:
+    With the virtual environment active, you can install the dependency using `pip`:
+    ```bash
+    pip install cryptography
+    ```
+Now you're ready to run the script. When you're finished, you can deactivate the virtual environment by simply typing `deactivate` in your terminal.
 
-On Windows:
+---
 
-.\venv\Scripts\activate
+## Usage
 
-Your terminal prompt should now be prefixed with (venv), indicating that the virtual environment is active.
+You can run the script in two ways: by providing command-line flags (recommended) or by using the interactive mode.
 
-3. Install the required libraries:
+### Using Command-Line Flags (Recommended)
 
-With the virtual environment active, you can install the dependencies using pip:
+You can provide all the necessary data directly as arguments when you run the script. This is the best method for automation and quick verification.
 
-pip install cryptography cbor2
+**Arguments:**
 
-Now you are ready to run the script. When you are finished, you can deactivate the virtual environment by simply typing deactivate in your terminal.
+* `--signature` or `-s`: The **base64url-encoded signature** from the assertion.
+* `--publicKey` or `-p`: The **PEM-formatted public key**. **Note:** Wrap this value in quotes (`"`) to handle special characters and newlines correctly.
+* `--clientData` or `-c`: The **base64url-encoded `clientDataJSON`** from the assertion.
+* `--authenticatorData` or `-a`: The **base64url-encoded `authenticatorData`** from the assertion.
 
-Usage
-You can run the script from your terminal, providing the required data as command-line arguments.
+**Example:**
 
-Example
+```bash
 python3 verify_signature.py \
---signature "MEUCIA..." \
---publicKey "pAEDA..." \
---clientData "eyJ0eX..." \
---authenticatorData "SZYN5..."
+  --signature "MEUC..." \
+  --publicKey "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEL65uG...=\n-----END PUBLIC KEY-----" \
+  --clientData "eyJ0eX..." \
+  --authenticatorData "SZYN5..."
+```
 
-Interactive Mode
-If you run the script without providing all the arguments, it will prompt you to enter the missing values interactively.
+### Using Interactive Mode
 
-python3 dfns_webauthn_verify_signature.py
+If you run the script without any flags, it will launch in interactive mode and prompt you to enter each piece of data one by one.
 
-The script will then ask for each piece of data:
+**Example:**
 
-Enter signature: <paste_signature_here>
-Enter publicKey: <paste_public_key_here>
-Enter clientData: <paste_client_data_here>
-Enter authenticatorData: <paste_authenticator_data_here>
+1.  Run the script:
+    ```bash
+    python3 verify_signature.py
+    ```
 
-Output
+2.  The script will then ask for each piece of data:
+    ```
+    No flags provided. Entering interactive mode...
+    Enter signature: <paste_signature_here>
+    Enter publicKey: <paste_public_key_here>
+    Enter clientData: <paste_client_data_here>
+    Enter authenticatorData: <paste_authenticator_data_here>
+    ```
+
+---
+
+## Output
+
 The script will print one of two possible results to the console:
 
-Signature is valid
+✅ **Signature is valid**
 
-Signature is NOT valid
+or
+
+❌ **Signature is NOT valid**
 
 If an error occurs during processing (e.g., the public key is malformed), an error message will be printed before the final result.

@@ -1,5 +1,7 @@
 import base64
 import hashlib
+import sys
+import argparse
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.exceptions import InvalidSignature
@@ -18,6 +20,8 @@ def base64url_decode(input_str: str) -> bytes:
 def load_pem_public_key(pem_key_str: str):
     """Loads a public key from a standard PEM-formatted string."""
     try:
+        # The key might have escaped newlines if passed as an argument
+        pem_key_str = pem_key_str.replace('\\n', '\n')
         pem_key_bytes = pem_key_str.encode('utf-8')
         public_key = serialization.load_pem_public_key(
             pem_key_bytes,
@@ -64,21 +68,49 @@ def verify_assertion_signature(
 # --- Main Execution Logic ---
 
 def main():
-    """Main function to run the interactive tool."""
-    print("Please provide the WebAuthn assertion data below.")
-    
-    # Prompt for all required inputs directly
-    signature = input("Enter signature: ")
-    public_key = input("Enter publicKey: ")
-    client_data = input("Enter clientData: ")
-    authenticator_data = input("Enter authenticatorData: ")
+    """Main function to run the tool."""
+    parser = argparse.ArgumentParser(
+        description="Verify a WebAuthn assertion signature. \nIf no flags are provided, the script will run in interactive mode.",
+        formatter_class=argparse.RawTextHelpFormatter # Allows for newlines in help text
+    )
+    parser.add_argument(
+        '-s', '--signature',
+        help="The base64url-encoded signature from the assertion."
+    )
+    parser.add_argument(
+        '-p', '--publicKey',
+        help="The PEM-formatted public key.\n(e.g., \"-----BEGIN...\\n...END-----\")"
+    )
+    parser.add_argument(
+        '-c', '--clientData',
+        help="The base64url-encoded clientDataJSON from the assertion."
+    )
+    parser.add_argument(
+        '-a', '--authenticatorData',
+        help="The base64url-encoded authenticatorData from the assertion."
+    )
 
-    public_key = public_key.replace('\\n', '\n')
-
-    # Check if any of the essential arguments are empty
-    if not all([signature, public_key, client_data, authenticator_data]):
-        print("\n❌ Error: All four values must be provided.")
-        return # Exit the function
+    # If run with no arguments, go to interactive mode
+    if len(sys.argv) == 1:
+        print("No flags provided. Entering interactive mode...")
+        signature = input("Enter signature: ")
+        public_key = input("Enter publicKey: ")
+        client_data = input("Enter clientData: ")
+        authenticator_data = input("Enter authenticatorData: ")
+        # Handle escaped newlines from pasted input
+        public_key = public_key.replace('\\n', '\n')
+    else:
+        args = parser.parse_args()
+        # Check that all required arguments were provided via flags
+        if not all([args.signature, args.publicKey, args.clientData, args.authenticatorData]):
+            parser.print_help()
+            print("\n❌ Error: All four arguments (--signature, --publicKey, --clientData, --authenticatorData) are required when using flags.")
+            sys.exit(1)
+        
+        signature = args.signature
+        public_key = args.publicKey
+        client_data = args.clientData
+        authenticator_data = args.authenticatorData
 
     # Perform the verification
     is_valid = verify_assertion_signature(
