@@ -11,6 +11,7 @@ class DfnsAPI:
         self.endpoint = endpoint
         self.headers = {}
         if appId != '':
+            print("DEPRECATION NOTICE: Applications (and app-id) are deprecated and will soon disappear. See https://docs.dfns.co/developers/guides/applications-deprecation.")
             self.setAppId(appId=appId)
         if authToken != '':
             self.setAuthToken(authToken=authToken)
