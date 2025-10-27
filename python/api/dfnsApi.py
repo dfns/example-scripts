@@ -5,12 +5,13 @@ class DfnsAPI:
     
     proxy = None
 
-    def __init__(self, host, endpoint, appId, authToken='', userActionToken='') -> None:
+    def __init__(self, host, endpoint, appId='', authToken='', userActionToken='') -> None:
         self.session = requests.Session()
         self.host = host
         self.endpoint = endpoint
         self.headers = {}
-        self.setAppId(appId=appId)
+        if appId != '':
+            self.setAppId(appId=appId)
         if authToken != '':
             self.setAuthToken(authToken=authToken)
         if userActionToken != '':
