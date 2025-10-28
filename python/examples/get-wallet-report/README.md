@@ -35,3 +35,11 @@ The generated CSV will contain the following fields:
     python main.py
     ```
 4. The output CSV (default "wallets.csv") will be written in the working directory.
+
+## Token
+
+Which token should you use? 
+
+Easy way: navigate to the Dfns dashboard > Settings > Personal Access Tokens and copy your JWT token. This token is linked to your own user, with the same permission as yours, and is only valid for the duration of your login session.
+
+Finer way: create a [Personal Access Token](https://docs.dfns.co/api-reference/auth/personal-access-tokens) or a [Service Account](https://docs.dfns.co/api-reference/auth/service-accounts) (see the [tutorial here](https://docs.dfns.co/introduction/quickstart/5-start-building-login-and-create-a-wallet-via-api)) based on a [key pair](https://docs.dfns.co/developers/guides/generate-a-key-pair). You can then assign specific permission to restrict access to what is actually needed, in our example: `Wallets:Read` only. 
