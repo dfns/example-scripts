@@ -36,7 +36,7 @@ class DfnsAPI:
             raise Exception("POST to %s failed with %d" % (url, res.status_code))
         return res.json()
 
-    def get(self, params):
+    def get(self, params={}):
         url = urllib.parse.urlunparse(("https", self.host, self.endpoint, "", urllib.parse.urlencode(params), "")) 
         res = self.session.get(url, headers=self.headers) 
         if res.status_code != 200:
